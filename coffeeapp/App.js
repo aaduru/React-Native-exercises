@@ -13,6 +13,7 @@ import {
   View
 } from 'react-native';
 
+const oauth2 = require('simple-oauth2').create(credentials);
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -47,7 +48,38 @@ componentDidMount() {
 
 }
 
-fetchData() {}
+fetchData() {
+  var lat = this.state.position.coords.latitude
+    var lng = this.state.position.coords.longitude
+    var latlng = "ll=" + String(lat) + "," + String(lng)
+    var consumerKey = "*"
+    var consumerSecret = "*"
+    var tokenSecret = "***"
+    var token = "Bearer"
+
+    oauth = new OAuthSimple(consumerKey, tokenSecret)
+    request = oauth.sign({
+      action: "GET",
+      path: "https://api.yelp.com/v2/search",
+      parameters: "term=coffee&" + latlng,
+      signatures: {api_key: consumerKey, shared_secret: consumerSecret, access_token: token, access_secret: tokenSecret},
+
+    })
+
+    var nav = this.props.navigator
+
+    fetch(request.signed_url, {method: "GET"}).then(function(response){
+      return response.json()
+    }).then(function(data){
+      nav.push({
+        ident: "Results",
+        data: data
+      })
+    }).catch(function(error){
+      console.log("Error:", error)
+    })
+
+  }
 
   render() {
     return (
