@@ -20,6 +20,7 @@ export default class App extends Component<{}> {
     super(props);
     this._fetchStory = this._fetchStory.bind(this);
     this._fetchYelp = this._fetchYelp.bind(this);
+    this._fetchYelpPost = this._fetchYelpPost.bind(this);
     this._fetchYelpGet = this._fetchYelpGet.bind(this);
   }
   _fetchStory(){
@@ -27,6 +28,33 @@ export default class App extends Component<{}> {
 
   }
 
+  _fetchYelpPost(){
+    var details = {
+      'client_id': '-qWaHcsd1FNhDOLm5IG1zw',
+      'client_secret': '2Z8KwxPhOiPr2NHmXzSGMppsocPykN4wLHaSl59icE0IRNNyEwHfCKO85ZZ071no',
+      'grant_type': 'client_credentials'
+};
+
+var formBody = [];
+for (var property in details) {
+  var encodedKey = encodeURIComponent(property);
+  var encodedValue = encodeURIComponent(details[property]);
+  formBody.push(encodedKey + "=" + encodedValue);
+}
+formBody = formBody.join("&");
+
+fetch('https://api.yelp.com/oauth2/token', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: formBody
+})
+
+
+
+  }
   _fetchYelp(){
 
   let data = {
@@ -65,6 +93,11 @@ export default class App extends Component<{}> {
         <TouchableHighlight onPress={this._fetchStory}>
           <Text style={styles.welcome}>
             Welcome to React Native!
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this._fetchYelpPost}>
+          <Text style={styles.welcome}>
+            Checkout Yelp post2
           </Text>
         </TouchableHighlight>
         <TouchableHighlight onPress={this._fetchYelp}>
